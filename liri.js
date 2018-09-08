@@ -1,5 +1,9 @@
 require("dotenv").config();
 var request = require("request");
+let dataKeys = require("./keys.js");
+var Spotify = require('node-spotify-api');
+
+///////////////////////////////////////////////////////
 
 //takes the command from the terminal
 var userCommand = process.argv[2];
@@ -24,18 +28,26 @@ function bandsInTown(){
     //uses bands in town API to return Name of Venue, Venue Location, and Date of event MM/DD/YYYY
 
     if(userInput===''|| userInput === undefined){
-        userInput = 'Beyonce'
+        userInput = 'Beyonce';
     };
 
     request(`https://rest.bandsintown.com/artists/${userInput}/events?app_id=codingbootcamp`, function(error, response, body) {
 
   // If the request is successful (i.e. if the response status code is 200)
     if (!error && response.statusCode === 200) {
-        console.log(`
-        Venue: ${JSON.parse(body).}
-        Venue Location:
-        Date of Event:
-        `);
+        // var output = body.split(",");
+        // console.log(JSON.parse(body));
+        var object = JSON.parse(body);
+        // console.log("object:" + object[0].venue.name);
+        object.forEach(element => {
+            //  console.log(element);
+             console.log(`
+            Venue: ${element.venue.name}
+            Venue Location: ${element.venue.city}, ${element.venue.country}
+            Date of Event: ${element.datetime}
+            `);
+        });
+        
     }
     });
     
@@ -71,7 +83,6 @@ function omdb(){
     Language: ${JSON.parse(body).Language}
     Plot: ${JSON.parse(body).Plot}
     Actors: ${JSON.parse(body).Actors}
-    
     `);
 
 //////////////////    //Missing Rotten Tomatoes Rating: + ${JSON.parse(body).Year}
