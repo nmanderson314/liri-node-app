@@ -23,8 +23,22 @@ function validateInput(){
 function bandsInTown(){
     //uses bands in town API to return Name of Venue, Venue Location, and Date of event MM/DD/YYYY
 
-    "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp"
+    if(userInput===''|| userInput === undefined){
+        userInput = 'Beyonce'
+    };
 
+    request(`https://rest.bandsintown.com/artists/${userInput}/events?app_id=codingbootcamp`, function(error, response, body) {
+
+  // If the request is successful (i.e. if the response status code is 200)
+    if (!error && response.statusCode === 200) {
+        console.log(`
+        Venue: ${JSON.parse(body).}
+        Venue Location:
+        Date of Event:
+        `);
+    }
+    });
+    
 }
 
 function spotify(){
@@ -50,13 +64,13 @@ function omdb(){
     
     // Parse the body of the site
     console.log(`
-    Title: + ${JSON.parse(body).Title}
-    Year: + ${JSON.parse(body).Year}
-    IMBD Rating: + ${JSON.parse(body).imdbRating}
-    Country: + ${JSON.parse(body).Country}
-    Language: + ${JSON.parse(body).Language}
-    Plot: + ${JSON.parse(body).Plot}
-    Actors: + ${JSON.parse(body).Actors}
+    Title: ${JSON.parse(body).Title}
+    Year: ${JSON.parse(body).Year}
+    IMBD Rating: ${JSON.parse(body).imdbRating}
+    Country: ${JSON.parse(body).Country}
+    Language: ${JSON.parse(body).Language}
+    Plot: ${JSON.parse(body).Plot}
+    Actors: ${JSON.parse(body).Actors}
     
     `);
 
