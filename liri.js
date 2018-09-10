@@ -1,7 +1,9 @@
 require("dotenv").config();
 var request = require("request");
-let dataKeys = require("./keys.js");
 var Spotify = require('node-spotify-api');
+
+var dataKeys = require("./keys.js");
+var spotify = new Spotify(dataKeys.spotify)
 
 ///////////////////////////////////////////////////////
 
@@ -35,27 +37,38 @@ function bandsInTown(){
 
   // If the request is successful (i.e. if the response status code is 200)
     if (!error && response.statusCode === 200) {
-        // var output = body.split(",");
-        // console.log(JSON.parse(body));
         var object = JSON.parse(body);
-        // console.log("object:" + object[0].venue.name);
         object.forEach(element => {
-            //  console.log(element);
              console.log(`
             Venue: ${element.venue.name}
             Venue Location: ${element.venue.city}, ${element.venue.country}
             Date of Event: ${element.datetime}
             `);
-        });
-        
+
+///////////// need to incorporate moments
+
+        }); 
     }
     });
     
 }
 
-function spotify(){
+function spotifyThis(){
     //song in the terminal window to retun Artist(s), song name, preview link, album
     //Ace of Base default
+
+spotify.search({ type: 'track', query: userInput }, function(err, response){
+    var song = response.tracks.items[0]
+    console.log(`
+    Artist: ${song.artists[0].name}
+    Song: ${song.name}
+    Album: ${song.album.name}
+    Preview: ${song.preview_url}
+    `
+    )
+
+  });
+  
 
 }
 
@@ -103,7 +116,7 @@ if(userCommand === "concert-this"){
     bandsInTown();
 }
 if(userCommand === "spotify-this-song"){
-    spotify();
+    spotifyThis();
 }
 if(userCommand === "movie-this"){
     omdb();
