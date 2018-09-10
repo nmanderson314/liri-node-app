@@ -1,4 +1,5 @@
 require("dotenv").config();
+var fs = require("fs");
 var request = require("request");
 var Spotify = require('node-spotify-api');
 
@@ -12,6 +13,7 @@ var userCommand = process.argv[2];
 //takes the additional input required for few of the commands
 var userInput = process.argv[3];
 
+///////////////////////////////////////////////////////////
 function validateInput(){
     console.log(`
     Command entered = ${userCommand}
@@ -28,36 +30,31 @@ function validateInput(){
 
 function bandsInTown(){
     //uses bands in town API to return Name of Venue, Venue Location, and Date of event MM/DD/YYYY
-
     if(userInput===''|| userInput === undefined){
         userInput = 'Beyonce';
     };
 
     request(`https://rest.bandsintown.com/artists/${userInput}/events?app_id=codingbootcamp`, function(error, response, body) {
-
   // If the request is successful (i.e. if the response status code is 200)
-    if (!error && response.statusCode === 200) {
-        var object = JSON.parse(body);
-        object.forEach(element => {
-             console.log(`
-            Venue: ${element.venue.name}
-            Venue Location: ${element.venue.city}, ${element.venue.country}
-            Date of Event: ${element.datetime}
-            `);
-
-///////////// need to incorporate moments
-
-        }); 
-    }
-    });
-    
-}
+        if (!error && response.statusCode === 200) {
+            var object = JSON.parse(body);
+            object.forEach(element => {
+                console.log(`
+                Venue: ${element.venue.name}
+                Venue Location: ${element.venue.city}, ${element.venue.country}
+                Date of Event: ${element.datetime}
+                `);
+    ///////////// need to incorporate moments
+            }); 
+        };
+    });  
+};
 
 function spotifyThis(){
     //song in the terminal window to retun Artist(s), song name, preview link, album
     //Ace of Base default
 
-spotify.search({ type: 'track', query: userInput }, function(err, response){
+    spotify.search({ type: 'track', query: userInput }, function(err, response){
     var song = response.tracks.items[0]
     console.log(`
     Artist: ${song.artists[0].name}
@@ -106,7 +103,38 @@ function omdb(){
 }
 
 function doWhatItSays(){
+    fs.readFile("random.txt", "utf8", function(error, data) {
 
+        // If the code experiences any errors it will log the error to the console.
+        if (error) {
+          return console.log(error);
+        }
+      
+        // We will then print the contents of data
+        console.log(data);
+      
+        // Then split it by commas (to make it more readable)
+        var dataArr = data.split(",");
+      
+        // We will then re-display the content as an array for later use.
+        
+        var callThis = dataArr[0];
+        userInput = dataArr[1];
+        console.log(`One ${callThis}, Two ${userInput}`);
+
+        if(callThis === 'spotify-this-song'){
+            spotifyThis();
+        }
+        else if(callThis === 'concert-this'){
+            bandsInTown();
+        }
+        else if(callThis === 'movie-this'){
+            omdb();
+        }
+
+      
+      });
+      
 }
 
 //////////////////////////////////////////////////////////
